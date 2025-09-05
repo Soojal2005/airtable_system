@@ -22,7 +22,10 @@ const Dashboard = ({ user }) => {
       <div className="row">
         <div className="col-12">
           <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2>My Forms</h2>
+            <div>
+              <h2>Welcome, {user?.name}!</h2>
+              <p className="text-muted">Manage your forms and responses</p>
+            </div>
             <Link to="/create" className="btn btn-primary">
               <i className="fas fa-plus me-2"></i>Create New Form
             </Link>
@@ -38,7 +41,7 @@ const Dashboard = ({ user }) => {
             <div className="row">
               {forms.map(form => (
                 <div key={form.id} className="col-md-4 mb-4">
-                  <div className="card h-100">
+                  <div className="card h-100 shadow-sm">
                     <div className="card-body">
                       <h5 className="card-title">{form.title}</h5>
                       <p className="card-text">
@@ -52,7 +55,7 @@ const Dashboard = ({ user }) => {
                         </span>
                       </p>
                     </div>
-                    <div className="card-footer">
+                    <div className="card-footer bg-transparent">
                       <Link to={`/form/${form.id}`} className="btn btn-outline-primary btn-sm me-2">
                         <i className="fas fa-eye me-1"></i>View
                       </Link>
@@ -63,6 +66,17 @@ const Dashboard = ({ user }) => {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {!loading && forms.length === 0 && (
+            <div className="text-center py-5">
+              <i className="fas fa-inbox fa-3x text-muted mb-3"></i>
+              <h4>No forms yet</h4>
+              <p className="text-muted">Create your first form to get started</p>
+              <Link to="/create" className="btn btn-primary">
+                Create First Form
+              </Link>
             </div>
           )}
         </div>

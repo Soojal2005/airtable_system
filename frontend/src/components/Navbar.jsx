@@ -1,7 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = ({ user, onLogout }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    onLogout();
+    navigate('/');
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container">
@@ -22,10 +29,10 @@ const Navbar = ({ user, onLogout }) => {
               <i className="fas fa-user me-1"></i> {user?.name}
             </a>
             <ul className="dropdown-menu">
-              <li><a className="dropdown-item" href="#">Profile</a></li>
+              <li><span className="dropdown-item-text">{user?.email}</span></li>
               <li><hr className="dropdown-divider" /></li>
               <li>
-                <button className="dropdown-item" onClick={onLogout}>
+                <button className="dropdown-item" onClick={handleLogout}>
                   <i className="fas fa-sign-out-alt me-1"></i> Logout
                 </button>
               </li>

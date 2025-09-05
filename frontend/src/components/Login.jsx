@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
-import { authenticate } from '../services/api';
+import { authenticate } from '../Services/api';
 
 const Login = ({ onLogin }) => {
   const [accessToken, setAccessToken] = useState('');
@@ -13,20 +13,36 @@ const Login = ({ onLogin }) => {
     setLoading(true);
 
     try {
-      // For demo purposes - replace with actual API call
+      // Simulate API call for demo
       setTimeout(() => {
         onLogin(
           { 
             id: 'user-123', 
             name: 'John Doe', 
             email: 'john@example.com',
-            bases: [] 
+            bases: [
+              {
+                id: 'base1',
+                name: 'Project Management',
+                tables: [
+                  {
+                    id: 'tbl1',
+                    name: 'Tasks',
+                    fields: [
+                      { id: 'fld1', name: 'Task Name', type: 'Short text' },
+                      { id: 'fld2', name: 'Description', type: 'Long text' },
+                      { id: 'fld3', name: 'Status', type: 'Single select', options: ['Todo', 'In Progress', 'Done'] }
+                    ]
+                  }
+                ]
+              }
+            ]
           },
           'mock-jwt-token'
         );
         setLoading(false);
       }, 1000);
-      
+
       // In real app, use:
       // const response = await authenticate(accessToken);
       // onLogin(response.data.user, response.data.token);
@@ -38,21 +54,22 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <Container fluid className="login-container">
-      <Row className="justify-content-center align-items-center h-100">
+    <Container fluid className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+      <Row className="w-100 justify-content-center">
         <Col md={6} lg={4}>
           <Card className="shadow">
-            <Card.Body className="p-5">
+            <Card.Body className="p-4">
               <div className="text-center mb-4">
+                <i className="fas fa-table fa-3x text-primary mb-3"></i>
                 <h2>Airtable Form Builder</h2>
-                <p className="text-muted">Connect your Airtable account to get started</p>
+                <p className="text-muted">Connect your Airtable account</p>
               </div>
 
               {error && <Alert variant="danger">{error}</Alert>}
 
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Airtable Personal Access Token</Form.Label>
+                  <Form.Label>Airtable Access Token</Form.Label>
                   <Form.Control
                     type="password"
                     value={accessToken}
@@ -61,7 +78,7 @@ const Login = ({ onLogin }) => {
                     required
                   />
                   <Form.Text className="text-muted">
-                    You can generate an access token from your Airtable account settings.
+                    Get this from your Airtable account settings
                   </Form.Text>
                 </Form.Group>
 
@@ -76,12 +93,12 @@ const Login = ({ onLogin }) => {
               </Form>
 
               <div className="mt-4">
-                <h6>How to get your access token:</h6>
-                <ol className="small">
-                  <li>Go to your Airtable account settings</li>
-                  <li>Navigate to the "Developer" section</li>
-                  <li>Generate a new personal access token</li>
-                  <li>Copy and paste it above</li>
+                <h6>How to get your token:</h6>
+                <ol className="small text-muted">
+                  <li>Go to Airtable account settings</li>
+                  <li>Navigate to "Developer" section</li>
+                  <li>Generate personal access token</li>
+                  <li>Copy and paste above</li>
                 </ol>
               </div>
             </Card.Body>

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
-import { api } from '../services/api';
 
 const FormBuilder = ({ user }) => {
   const [selectedBase, setSelectedBase] = useState('');
   const [selectedTable, setSelectedTable] = useState('');
   const [formTitle, setFormTitle] = useState('');
-  const [formDescription, setFormDescription] = useState('');
   const [selectedFields, setSelectedFields] = useState([]);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -14,6 +12,7 @@ const FormBuilder = ({ user }) => {
   const handleBaseChange = (baseId) => {
     setSelectedBase(baseId);
     setSelectedTable('');
+    setSelectedFields([]);
   };
 
   const handleFieldToggle = (field) => {
@@ -24,8 +23,7 @@ const FormBuilder = ({ user }) => {
         fieldId: field.id,
         label: field.name,
         type: field.type,
-        required: false,
-        conditions: null
+        required: false
       }]);
     }
   };
@@ -37,38 +35,33 @@ const FormBuilder = ({ user }) => {
         return;
       }
 
-      const formData = {
-        title: formTitle,
-        description: formDescription,
-        baseId: selectedBase,
-        tableId: selectedTable,
-        fields: selectedFields
-      };
+      // Simulate API call
+      setTimeout(() => {
+        setSuccess('Form created successfully!');
+        setError('');
+        
+        // Reset form
+        setSelectedBase('');
+        setSelectedTable('');
+        setFormTitle('');
+        setSelectedFields([]);
+      }, 1000);
 
-      await api.createForm(formData);
-      setSuccess('Form created successfully!');
-      setError('');
-      
-      // Reset form
-      setSelectedBase('');
-      setSelectedTable('');
-      setFormTitle('');
-      setFormDescription('');
-      setSelectedFields([]);
     } catch (error) {
       setError('Failed to create form: ' + error.message);
       setSuccess('');
     }
   };
 
-  const selectedBaseData = user.bases.find(base => base.id === selectedBase);
+  const selectedBaseData = user.bases?.find(base => base.id === selectedBase);
   const selectedTableData = selectedBaseData?.tables.find(table => table.id === selectedTable);
 
   return (
-    <Container fluid className="py-4">
+    <Container className="py-4">
       <Row>
         <Col>
           <h2>Create New Form</h2>
+          <p className="text-muted">Build your form using Airtable fields</p>
         </Col>
       </Row>
 
@@ -81,22 +74,13 @@ const FormBuilder = ({ user }) => {
             <Card.Body>
               <h5>Form Details</h5>
               <Form.Group className="mb-3">
-                <Form.Label>Form Title</Form.Label>
+                <Form.Label>Form Title *</Form.Label>
                 <Form.Control
                   type="text"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
                   placeholder="Enter form title"
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={2}
-                  value={formDescription}
-                  onChange={(e) => setFormDescription(e.target.value)}
-                  placeholder="Enter form description"
+                  required
                 />
               </Form.Group>
             </Card.Body>
@@ -104,7 +88,7 @@ const FormBuilder = ({ user }) => {
 
           <Card>
             <Card.Body>
-              <h5>Form Fields</h5>
+              <h5>Selected Fields ({selectedFields.length})</h5>
               {selectedFields.length > 0 ? (
                 selectedFields.map(field => (
                   <div key={field.fieldId} className="border p-3 mb-2 rounded">
@@ -140,7 +124,7 @@ const FormBuilder = ({ user }) => {
                 className="mb-3"
               >
                 <option value="">Choose a base</option>
-                {user.bases.map(base => (
+                {user.bases?.map(base => (
                   <option key={base.id} value={base.id}>{base.name}</option>
                 ))}
               </Form.Select>
